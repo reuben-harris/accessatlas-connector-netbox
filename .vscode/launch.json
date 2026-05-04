@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "FastAPI",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app.run",
+      "env": {
+        "PORT": "8001",
+        "LOG_LEVEL": "info"
+      },
+      "envFile": "${workspaceFolder}/.env",
+      "jinja": true
+    }
+  ]
+}
