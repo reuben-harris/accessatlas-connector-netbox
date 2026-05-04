@@ -75,7 +75,7 @@ async def test_netbox_client_maps_netbox_sites_with_nullable_fields():
     finally:
         await netbox_http_client.aclose()
 
-    assert feed.schema_version == "1.1"
+    assert feed.schema_version == "1.0"
     assert feed.source_name == "netbox"
     assert len(feed.sites) == 2
     assert feed.sites[0].model_dump() == {
@@ -128,7 +128,7 @@ def test_verify_bearer_token_rejects_wrong_token():
 
 def test_access_atlas_feed_serializes_generated_at_as_utc_z():
     feed = AccessAtlasFeed(
-        schema_version="1.1",
+        schema_version="1.0",
         source_name="netbox",
         generated_at="2026-05-04T10:11:12+00:00",
         sites=[],
