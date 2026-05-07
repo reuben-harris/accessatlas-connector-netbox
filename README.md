@@ -49,10 +49,35 @@ Required values:
 
 Optional values:
 
+- `NETBOX_SITE_FILTER`
 - `NETBOX_TAG_CUSTOM_FIELDS`
 - `DEBUG`
 
 The NetBox API token must be able to read sites, custom fields, and custom field choice sets. In NetBox, this can be scoped by assigning the token to a user or group with the required object permissions.
+
+### Site Filtering
+
+By default, the connector exports all NetBox sites. To limit which sites are exported, set `NETBOX_SITE_FILTER` to a NetBox sites API query string without the leading `?`.
+
+Examples:
+
+```env
+NETBOX_SITE_FILTER=status=active
+NETBOX_SITE_FILTER=cf_storage_location=false
+NETBOX_SITE_FILTER=status=active&cf_storage_location=false
+```
+
+You can build the filter in the NetBox sites GUI, confirm the displayed sites are correct, then copy everything after the `?` from the browser URL bar. For example, if NetBox shows:
+
+```text
+https://netbox.example.com/dcim/sites/?status=active&cf_storage_location=false
+```
+
+use:
+
+```env
+NETBOX_SITE_FILTER=status=active&cf_storage_location=false
+```
 
 ## Local Development
 

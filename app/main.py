@@ -78,7 +78,7 @@ async def get_site_feed(
             extra={
                 "upstream": "netbox",
                 "status_code": exc.response.status_code,
-                "url": str(exc.response.request.url),
+                "path": exc.response.request.url.path,
             },
         )
         raise HTTPException(

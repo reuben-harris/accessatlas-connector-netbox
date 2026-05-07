@@ -82,7 +82,7 @@ class NetBoxClient:
             return await self._fetch_sites(client)
 
     async def _fetch_sites(self, client: httpx.AsyncClient) -> list[NetBoxSite]:
-        page_url = urljoin(self.settings.netbox_url, NETBOX_API_PATH)
+        page_url = self._site_list_url()
         collected: list[NetBoxSite] = []
 
         while page_url:
@@ -92,6 +92,13 @@ class NetBoxClient:
 
         logger.info("Fetched NetBox sites", extra={"site_count": len(collected)})
         return collected
+
+    def _site_list_url(self) -> str:
+        site_list_url = urljoin(self.settings.netbox_url, NETBOX_API_PATH)
+        if not self.settings.netbox_site_filter:
+            return site_list_url
+
+        return f"{site_list_url}?{self.settings.netbox_site_filter}"
 
     async def _fetch_tag_choices(
         self,
