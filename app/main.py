@@ -19,7 +19,7 @@ def verify_bearer_token(
     authorization: str | None = Header(default=None),
     settings: Settings = Depends(get_settings),
 ) -> None:
-    if authorization != f"Bearer {settings.access_atlas_bearer_token}":
+    if authorization != f"Bearer {settings.access_atlas_token}":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unauthorized",

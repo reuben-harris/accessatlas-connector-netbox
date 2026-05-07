@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     netbox_url: str = Field(alias="NETBOX_URL")
     netbox_token: str = Field(alias="NETBOX_TOKEN")
-    access_atlas_bearer_token: str = Field(alias="ACCESS_ATLAS_BEARER_TOKEN")
+    access_atlas_token: str = Field(alias="ACCESS_ATLAS_TOKEN")
 
 
 @lru_cache

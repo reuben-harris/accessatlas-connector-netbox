@@ -15,7 +15,7 @@ from app.netbox import (
 class DummySettings:
     netbox_url = "https://netbox.example.com"
     netbox_token = "netbox-token"
-    access_atlas_bearer_token = "atlas-token"
+    access_atlas_token = "atlas-token"
     port = 8000
     log_level = "info"
 
