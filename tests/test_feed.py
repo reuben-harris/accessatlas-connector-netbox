@@ -41,6 +41,16 @@ class EncodedFilterSettings(DummySettings):
     netbox_site_filter = "status=active&q=Main%20Site"
 
 
+@pytest.fixture
+def app_env(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setenv("NETBOX_URL", "https://netbox.example.com")
+    monkeypatch.setenv("NETBOX_TOKEN", "netbox-token")
+    monkeypatch.setenv("ACCESS_ATLAS_TOKEN", "atlas-token")
+    get_settings.cache_clear()
+    yield
+    get_settings.cache_clear()
+
+
 def test_settings_parse_tag_fields_debug_and_ignore_unrelated_values():
     settings = Settings(
         NETBOX_URL="https://netbox.example.com",
@@ -84,7 +94,7 @@ def test_settings_reject_site_filter_full_urls_and_paths(site_filter: str):
         )
 
 
-def test_site_feed_endpoint_requires_bearer_token_and_serializes_feed():
+def test_site_feed_endpoint_requires_bearer_token_and_serializes_feed(app_env):
     class StubNetBoxClient:
         async def fetch_feed(self):
             return AccessAtlasFeed(
@@ -165,6 +175,7 @@ def test_site_feed_endpoint_requires_bearer_token_and_serializes_feed():
     ],
 )
 def test_site_feed_endpoint_translates_upstream_errors(
+    app_env,
     upstream_error: Exception,
     expected_status_code: int,
     expected_detail: str,
