@@ -12,9 +12,26 @@ NetBox site fields map to Access Atlas as follows:
 - `description` -> `description`
 - `latitude` -> `latitude`
 - `longitude` -> `longitude`
+- configured custom fields -> `tags`
 
-All NetBox sites are exported. Missing `facility`, `description`, `latitude`,
-or `longitude` are returned as `null`.
+All NetBox sites are exported. Missing `facility`, `description`, `latitude`, or `longitude` are returned as `null`.
+
+Configured custom fields are exposed as Access Atlas tags. For NetBox choice fields, the connector uses the display label as the tag value. If the NetBox choice set defines a color, that color is passed through.
+
+Tags are emitted as an array of label/color objects:
+
+```json
+"tags": [
+  {"label": "Remote", "color": "orange"},
+  {"label": "Annual programme", "color": "blue"}
+]
+```
+
+Example:
+
+```env
+NETBOX_TAG_CUSTOM_FIELDS=site_type,access_class
+```
 
 ## Configuration
 
@@ -24,7 +41,18 @@ Copy `.env.example` and set values:
 cp .env.example .env
 ```
 
-All values are required to be set for both production and development.
+Required values:
+
+- `NETBOX_URL`
+- `NETBOX_TOKEN`
+- `ACCESS_ATLAS_TOKEN`
+
+Optional values:
+
+- `NETBOX_TAG_CUSTOM_FIELDS`
+- `DEBUG`
+
+The NetBox API token must be able to read sites, custom fields, and custom field choice sets. In NetBox, this can be scoped by assigning the token to a user or group with the required object permissions.
 
 ## Local Development
 
@@ -37,7 +65,7 @@ The feed endpoint is:
 
 ```text
 GET /site-feed.json
-Authorization: Bearer <ACCESS_ATLAS_BEARER_TOKEN>
+Authorization: Bearer <ACCESS_ATLAS_TOKEN>
 ```
 
 Health endpoint:

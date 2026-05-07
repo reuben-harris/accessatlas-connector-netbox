@@ -27,11 +27,16 @@ NetBox site fields are mapped as follows:
 - `description` -> `description`
 - `latitude` -> `latitude`
 - `longitude` -> `longitude`
+- configured custom fields -> `tags`
 
 Rules:
 
 - export all NetBox sites
 - `code`, `description`, `latitude`, and `longitude` may be `null`
+- `schema_version` remains `1.0` for the tags feature
+- tag values use NetBox display labels when choice metadata is available
+- tag colors come from NetBox custom field choice-set `choice_colors`
+- `tags` is an array of `{label, color}` objects
 - pagination must be followed so the returned feed is complete
 
 ## Working Rules
