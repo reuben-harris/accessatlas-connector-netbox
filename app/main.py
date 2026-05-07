@@ -1,5 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
+from time import perf_counter
 
 from fastapi import Depends, FastAPI, Header, HTTPException, status
 
@@ -15,6 +16,13 @@ from app.netbox import (
 logger = logging.getLogger(__name__)
 
 
+def configure_logging(settings: Settings) -> None:
+    logging.basicConfig(
+        level=logging.DEBUG if settings.debug else logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s %(message)s",
+    )
+
+
 def verify_bearer_token(
     authorization: str | None = Header(default=None),
     settings: Settings = Depends(get_settings),
@@ -28,6 +36,7 @@ def verify_bearer_token(
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    configure_logging(get_settings())
     yield
 
 
@@ -49,7 +58,20 @@ async def get_site_feed(
     client: NetBoxClient = Depends(get_netbox_client),
 ):
     try:
-        return await client.fetch_feed()
+        logger.info("Generating Access Atlas site feed")
+        started_at = perf_counter()
+        feed = await client.fetch_feed()
+        duration_ms = round((perf_counter() - started_at) * 1000, 2)
+        tag_count = sum(len(site.tags) for site in feed.sites)
+        logger.info(
+            "Generated Access Atlas site feed",
+            extra={
+                "site_count": len(feed.sites),
+                "tag_count": tag_count,
+                "duration_ms": duration_ms,
+            },
+        )
+        return feed
     except NetBoxUpstreamHTTPError as exc:
         logger.warning(
             "NetBox upstream request failed",

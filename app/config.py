@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     netbox_token: str = Field(alias="NETBOX_TOKEN")
     access_atlas_token: str = Field(alias="ACCESS_ATLAS_TOKEN")
     tag_custom_fields_raw: str = Field("", alias="NETBOX_TAG_CUSTOM_FIELDS")
+    debug: bool = Field(False, alias="DEBUG")
 
     @property
     def tag_custom_fields(self) -> list[str]:
